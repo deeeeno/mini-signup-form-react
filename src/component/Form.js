@@ -4,11 +4,13 @@ import FormDataContext from '../Context'
 function Form({ modalOpen }) {
     const [idFocus, setIdFocus] = useState(true)
     const [pwdFocus, setPwdFocus] = useState(true)
-    const [idErrMessage, setIdErrMessage] = useState('')
-    const [pwdErrMessage, setPwdErrMessage] = useState(0)
     const [pwdChkFocus, setPwdChkFocus] = useState(true)
-    const [pwdChkErrMessage, setPwdChkErrMessage] = useState('')
     const { formData } = useContext(FormDataContext)
+    const [errMessage, setErrMessage] = useState({
+        id: '',
+        pwd: '',
+        pwdChk: '',
+    })
 
     const ERR_MESSAGE = {
         0: '',
@@ -22,17 +24,17 @@ function Form({ modalOpen }) {
     useEffect(() => {
         if (!idFocus) {
             const errno = validator('id', formData['id'])
-            setIdErrMessage(ERR_MESSAGE[errno])
+            setErrMessage({ ...errMessage, id: ERR_MESSAGE[errno] })
         } else {
-            setIdErrMessage('')
+            setErrMessage({ ...errMessage, id: '' })
         }
     }, [idFocus])
     useEffect(() => {
         if (!pwdFocus) {
             const errno = validator('pwd', formData['pwd'])
-            setPwdErrMessage(ERR_MESSAGE[errno])
+            setErrMessage({ ...errMessage, pwd: ERR_MESSAGE[errno] })
         } else {
-            setPwdErrMessage('')
+            setErrMessage({ ...errMessage, pwd: '' })
         }
     }, [pwdFocus])
     useEffect(() => {
@@ -42,9 +44,9 @@ function Form({ modalOpen }) {
                 formData['pwdChk'],
                 formData['pwd']
             )
-            setPwdChkErrMessage(ERR_MESSAGE[errno])
+            setErrMessage({ ...errMessage, pwdChk: ERR_MESSAGE[errno] })
         } else {
-            setPwdChkErrMessage('')
+            setErrMessage({ ...errMessage, pwdChk: '' })
         }
     }, [pwdChkFocus])
 
@@ -72,7 +74,6 @@ function Form({ modalOpen }) {
         const pwdChkV = validator('pwdChk', formData['pwdChk'], formData['pwd'])
 
         if (idV + pwdV + pwdChkV === 0) {
-            //document.querySelector('#modal').showModal()
             modalOpen()
         }
         setIdFocus(false)
@@ -114,7 +115,7 @@ function Form({ modalOpen }) {
                 <FormInput
                     label={'아이디'}
                     id={'id'}
-                    errMessage={idErrMessage}
+                    errMessage={errMessage['id']}
                     props={{
                         type: 'text',
                         placeholder: '아이디를 입력해주세요.',
@@ -129,7 +130,7 @@ function Form({ modalOpen }) {
                 <FormInput
                     label={'비밀번호'}
                     id={'pwd'}
-                    errMessage={pwdErrMessage}
+                    errMessage={errMessage['pwd']}
                     props={{
                         type: 'password',
                         placeholder: '비밀번호를 입력해주세요.',
@@ -143,7 +144,7 @@ function Form({ modalOpen }) {
                 <FormInput
                     label={'비밀번호 확인'}
                     id={'pwdChk'}
-                    errMessage={pwdChkErrMessage}
+                    errMessage={errMessage['pwdChk']}
                     props={{
                         type: 'password',
                         placeholder: '비밀번호 확인을 입력해주세요.',
