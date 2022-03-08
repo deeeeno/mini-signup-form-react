@@ -1,30 +1,26 @@
 import './App.css'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Font from './component/Font'
 import Modal from './component/Modal'
 import Form from './component/Form'
-function App() {
-    const [id, setId] = useState('')
-    const [pwd, setPwd] = useState('')
-    const [pwdChk, setPwdChk] = useState('')
+import FormDataContext from './Context'
+import { defaultFormValue } from './Context'
 
+function App() {
+    const [isopen, setIsOpen] = useState(false)
+    const [formData, setFormData] = useState(defaultFormValue)
     return (
         <>
-            <section className="form-wrapper">
-                <Form
-                    id={id}
-                    pwd={pwd}
-                    pwdChk={pwdChk}
-                    setId={setId}
-                    setPwd={setPwd}
-                    setPwdChk={setPwdChk}
-                />
-                <footer className="text-center text-gray-500 text-xs">
-                    ©2022 Hanameee Corp. All rights reserved
-                </footer>
-            </section>
-            <Font />
-            <Modal id={id} pwd={pwd} />
+            <FormDataContext.Provider value={{ formData, setFormData }}>
+                <section className="form-wrapper">
+                    <Form />
+                    <footer className="text-center text-gray-500 text-xs">
+                        ©2022 Hanameee Corp. All rights reserved
+                    </footer>
+                </section>
+                <Font />
+                <Modal isOpen={isopen} />
+            </FormDataContext.Provider>
         </>
     )
 }

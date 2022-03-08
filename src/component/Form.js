@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import FormInput from './FormInput'
-function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
+import FormDataContext from '../Context'
+function Form({ modalOpen }) {
     const [idFocus, setIdFocus] = useState(true)
     const [pwdFocus, setPwdFocus] = useState(true)
     const [idErrMessage, setIdErrMessage] = useState('')
     const [pwdErrMessage, setPwdErrMessage] = useState(0)
     const [pwdChkFocus, setPwdChkFocus] = useState(true)
     const [pwdChkErrMessage, setPwdChkErrMessage] = useState('')
+    const { formData } = useContext(FormDataContext)
+
     const ERR_MESSAGE = {
         0: '',
         required: '필수 정보입니다.',
@@ -18,7 +21,7 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
 
     useEffect(() => {
         if (!idFocus) {
-            const errno = validator('id', id)
+            const errno = validator('id', formData['id'])
             setIdErrMessage(ERR_MESSAGE[errno])
         } else {
             setIdErrMessage('')
@@ -26,7 +29,7 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
     }, [idFocus])
     useEffect(() => {
         if (!pwdFocus) {
-            const errno = validator('pwd', pwd)
+            const errno = validator('pwd', formData['pwd'])
             setPwdErrMessage(ERR_MESSAGE[errno])
         } else {
             setPwdErrMessage('')
@@ -34,7 +37,11 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
     }, [pwdFocus])
     useEffect(() => {
         if (!pwdChkFocus) {
-            const errno = validator('pwdChk', pwdChk, pwd)
+            const errno = validator(
+                'pwdChk',
+                formData['pwdChk'],
+                formData['pwd']
+            )
             setPwdChkErrMessage(ERR_MESSAGE[errno])
         } else {
             setPwdChkErrMessage('')
@@ -60,12 +67,13 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
     //form handlers
     const onSubmitForm = (e) => {
         e.preventDefault()
-        const idV = validator('id', id)
-        const pwdV = validator('pwd', pwd)
-        const pwdChkV = validator('pwdChk', pwdChk, pwd)
+        const idV = validator('id', formData['id'])
+        const pwdV = validator('pwd', formData['pwd'])
+        const pwdChkV = validator('pwdChk', formData['pwdChk'], formData['pwd'])
 
         if (idV + pwdV + pwdChkV === 0) {
-            document.querySelector('#modal').showModal()
+            //document.querySelector('#modal').showModal()
+            modalOpen()
         }
         setIdFocus(false)
         setPwdFocus(false)
@@ -73,9 +81,6 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
     }
 
     //id Input handlers
-    const onChangeId = (e) => {
-        setId(e.target.value)
-    }
     const onFocusId = (e) => {
         setIdFocus(true)
     }
@@ -84,9 +89,6 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
     }
 
     //password input handlers
-    const onChangePwd = (e) => {
-        setPwd(e.target.value)
-    }
     const onFocusPwd = (e) => {
         setPwdFocus(true)
     }
@@ -95,9 +97,6 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
     }
 
     //password check handlers
-    const onChangePwdChk = (e) => {
-        setPwdChk(e.target.value)
-    }
     const onFocusPwdChk = (e) => {
         setPwdChkFocus(true)
     }
@@ -120,7 +119,7 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
                         type: 'text',
                         placeholder: '아이디를 입력해주세요.',
                         autoFocus: true,
-                        onChange: onChangeId,
+                        //onChange: onChangeId,
                         onFocus: onFocusId,
                         onBlur: onFocusOutId,
                     }}
@@ -129,12 +128,12 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
             <div className="mb-4">
                 <FormInput
                     label={'비밀번호'}
-                    id={'pw'}
+                    id={'pwd'}
                     errMessage={pwdErrMessage}
                     props={{
                         type: 'password',
                         placeholder: '비밀번호를 입력해주세요.',
-                        onChange: onChangePwd,
+                        //onChange: onChangePwd,
                         onFocus: onFocusPwd,
                         onBlur: onFocusOutPwd,
                     }}
@@ -143,12 +142,12 @@ function Form({ id, pwd, pwdChk, setId, setPwd, setPwdChk }) {
             <div className="mb-6">
                 <FormInput
                     label={'비밀번호 확인'}
-                    id={'pw-check'}
+                    id={'pwdChk'}
                     errMessage={pwdChkErrMessage}
                     props={{
                         type: 'password',
                         placeholder: '비밀번호 확인을 입력해주세요.',
-                        onChange: onChangePwdChk,
+                        //onChange: onChangePwdChk,
                         onFocus: onFocusPwdChk,
                         onBlur: onFocusOutPwdChk,
                     }}

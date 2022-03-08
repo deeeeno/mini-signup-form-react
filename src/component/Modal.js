@@ -1,14 +1,23 @@
-function Modal({ id, pwd }) {
+import FormDataContext from '../Context'
+import { useContext } from 'react'
+function Modal({ id, pwd, isopen, modalClose }) {
+    const { formData } = useContext(FormDataContext)
     //approve, cancel btn handlers
     const onClickCancel = (e) => {
-        document.querySelector('#modal').close()
+        //document.querySelector('#modal').close()
+        modalClose()
     }
     const onClickApprove = (e) => {
         alert('가입되었습니다 🥳')
-        document.querySelector('#modal').close()
+        //document.querySelector('#modal').close()
+        modalClose()
     }
     return (
-        <dialog id="modal" className="rounded-lg shadow-xl text-left">
+        <dialog
+            id="modal"
+            isopen={isopen}
+            className="rounded-lg shadow-xl text-left"
+        >
             <div className="w-full rounded-lg">
                 <div className="p-6 mt-3">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -21,7 +30,7 @@ function Modal({ id, pwd }) {
                                 id="confirm-id"
                                 className="text-sm text-blue-500 bold"
                             >
-                                {id}
+                                {formData['id']}
                             </p>
                         </div>
                         <div className="mt-2">
@@ -30,7 +39,7 @@ function Modal({ id, pwd }) {
                                 id="confirm-pw"
                                 className="text-sm text-blue-500 bold"
                             >
-                                {pwd}
+                                {formData['pwd']}
                             </p>
                         </div>
                     </div>
