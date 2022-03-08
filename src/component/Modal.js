@@ -1,23 +1,19 @@
 import FormDataContext from '../Context'
-import { useContext } from 'react'
-function Modal({ id, pwd, isopen, modalClose }) {
+import { useContext, forwardRef } from 'react'
+const Modal = forwardRef((props, ref) => {
     const { formData } = useContext(FormDataContext)
     //approve, cancel btn handlers
     const onClickCancel = (e) => {
         //document.querySelector('#modal').close()
-        modalClose()
+        ref.current.close()
     }
     const onClickApprove = (e) => {
         alert('가입되었습니다 🥳')
+        ref.current.close()
         //document.querySelector('#modal').close()
-        modalClose()
     }
     return (
-        <dialog
-            id="modal"
-            isopen={isopen}
-            className="rounded-lg shadow-xl text-left"
-        >
+        <dialog id="modal" className="rounded-lg shadow-xl text-left" ref={ref}>
             <div className="w-full rounded-lg">
                 <div className="p-6 mt-3">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -65,5 +61,5 @@ function Modal({ id, pwd, isopen, modalClose }) {
             </div>
         </dialog>
     )
-}
+})
 export default Modal
